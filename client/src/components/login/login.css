@@ -1,109 +1,270 @@
+/* ===== Outer shell ===== */
 #login-container {
   display: flex;
-  height: 100dvh;
+  min-height: 100dvh;
   width: 100%;
   justify-content: center;
   align-items: center;
+  padding: 2rem;
   background-color: var(--bg-dark);
+  color: var(--font-light);
 }
 
-#art-div{
+/* ===== The dark-blue card holding everything ===== */
+#img-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 3rem;
+  width: 100%;
+  max-width: 1100px;
+  min-height: 50rem;
+  padding: 3rem;
+  border-radius: 1.5rem;
+  background-color: #0a1a3a;
+  overflow: hidden;
+  color: var(--font-light);
+}
+
+/* Decorative sphere — anchored to bottom-right of the card */
+.bg-decoration {
+  position: absolute;
+  bottom: 1rem;
+  left: 2rem;
+  width: 30rem;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== Left: art panel ===== */
+#art-div {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
 }
 
-#img-container {
-  position: absolute;
+#eb-logo-container {
+  width: 8rem;
+  height: 7rem;
 }
 
-#eb-logo-container{
-  width: 10rem;
-  height: 8.7rem;
-}
-
-#eb-img{
+#eb-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
-#info {
+#art-txt {
   display: flex;
   flex-direction: column;
-  position: relative;
+  gap: 1rem;
 }
+
+#welcome-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--font-light);
+}
+
+#welcome-title-highlight {
+  display: block;
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-top: 0.25rem;
+}
+
+#welcome-txt {
+  color: var(--font-light);
+  opacity: 0.85;
+}
+
+/* ===== Right: form card ===== */
+#login-form {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: var(--bg-medium);
+  color: var(--font-light);
+}
+
 
 #form-title {
   display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* #form-body {
-  width: 100%;
-}
-
-#login-form {
-  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-  border-radius: 15px;
-  padding: 2.5rem 2rem 2.5rem;
-  background-color: var(--bg-medium);
+  gap: 0.4rem;
+  text-align: center;
 }
 
 .data-form-title {
-  font-size: 1.5rem;
-  color: aliceblue;
-  font-weight: bold;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--font-light);
 }
 
-form {
+#form-title p {
+  color: var(--font-light);
+  opacity: 0.75;
+}
+
+/* ===== Form body ===== */
+#form-body {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  color: aliceblue;
+  gap: 1rem;
+}
+
+#form-body form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .form-group {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
-#logo-img {
-  height: 7rem;
-  width: fit-content;
-  background-color: rgb(240, 240, 240);
-  border-radius: 0.7rem;
-}
-
-label {
+.form-group label {
   font-family: "DM Sans", sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  color: var(--font-light);
 }
 
-input[type='email'], input[type='password'], input[type='text'],input[type='tel'] {
-  border-radius: 0.3rem;
-  background-color: rgb(211, 211, 211);
-  border-style: none;
-  padding: 0.3rem;
+.form-group input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 0.4rem;
+  background-color: rgb(220, 220, 220);
+  color: rgb(20, 20, 20);
 }
 
-input[type='submit'] {
+.form-group input:focus {
+  outline: 2px solid var(--blue-available);
+  outline-offset: 1px;
+}
+
+.forgot {
+  align-self: flex-end;
+  font-size: 0.85rem;
+  color: var(--font-light);
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+input[type="submit"] {
   background-color: var(--blue);
-  color: aliceblue;
-  border-style: none;
-  width: 9rem;
-  height: 3.2rem;
-  font-size: 1.2rem;
+  color: var(--font-light);
+  border: none;
+  width: 100%;
+  height: 3rem;
+  font-size: 1.05rem;
   font-weight: bold;
   font-family: "DM Sans", sans-serif;
-  border-radius: 2rem;
-  align-self: center;
+  border-radius: 999px;
+  cursor: pointer;
 }
 
-input[type='submit']:hover{
+input[type="submit"]:hover {
   background-color: var(--blue-hover);
+}
+
+/* ===== Divider + Google button ===== */
+#divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#divider .line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--bg-light);
+}
+
+#divider-txt {
+  color: var(--font-light);
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+
+#google-enter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--bg-light);
+  color: var(--font-light);
+  border-radius: 0.5rem;
+  padding: 0.6rem;
   cursor: pointer;
-} */
+}
+
+#google-enter-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ===== Sign-up prompt at the bottom ===== */
+.signup-prompt {
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--font-light);
+  opacity: 0.85;
+}
+
+.signup-prompt a {
+  color: var(--blue-available);
+  text-decoration: none;
+}
+
+.signup-prompt a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Responsive: stack on narrow screens ===== */
+@media (max-width: 800px) {
+  #img-container {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 2rem;
+  
+  #welcome-title-highlight {
+    font-size:1.8rem;
+  }
+
+  .bg-decoration {
+    display: none;
+  }
+  }
+
+}
+
+/* ===== Error + loading UI ===== */
+.form-error {
+  font-size: 0.85rem;
+  color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.08);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  margin-top: -0.25rem;
+}
+
+input:disabled,
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

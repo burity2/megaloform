@@ -1,47 +1,85 @@
-const Candidate = require('./model');
-const bcrypt = require("bcryptjs");
+import Candidate from './model';
+import bcrypt from "bcryptjs";
+import { Request, Response } from 'express';
+import { signToken } from './jwt';
 
-async function enter(req, res) {
+function buildAuthResponse(candidate: { _id: unknown }) {
+  const token = signToken({ candidateId: String(candidate._id) });
+  return { token, candidate };
+}
+
+const MIN_PASSWORD_LENGTH = 8;
+
+async function signup(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
 
-    if(!email || !password) {
-      return res.status(400).json({ message: 'Email and Password are needed!'})
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required.' });
     }
 
-    const sanitizedEmail = email.trim().toLowerCase();
-    const existingCandidate = await Candidate.findOne({ "profile.email": sanitizedEmail });
-
-    if(!existingCandidate) {
-      const passwordHash = await bcrypt.hash(password, 10);
-
-      const candidate = await Candidate.create({
-        profile: {
-          email: sanitizedEmail,
-          firstName: "",
-          lastNames: "",
-          phone: "",
-        },
-        isApproved: false,
-        passwordHash,
+    if (typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
+      return res.status(400).json({
+        message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`,
       });
-
-      return res.status(200).json(candidate);
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, existingCandidate.passwordHash);
-    if (!isPasswordCorrect) {
-      return res.status(401).json({ message: "Incorrect Password" })
+    const sanitizedEmail = String(email).trim().toLowerCase();
+    const existing = await Candidate.findOne({ "profile.email": sanitizedEmail });
+
+    if (existing) {
+      return res.status(409).json({ message: 'An account with that email already exists.' });
     }
 
-    return res.status(200).json(existingCandidate)
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const candidate = await Candidate.create({
+      profile: {
+        email: sanitizedEmail,
+        firstName: "",
+        lastNames: "",
+        phone: "",
+      },
+      isApproved: false,
+      passwordHash,
+    });
+
+    return res.status(201).json(buildAuthResponse(candidate));
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
-async function register(req, res){
+async function login(req: Request, res: Response) {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required.' });
+    }
+
+    const sanitizedEmail = String(email).trim().toLowerCase();
+    const candidate = await Candidate.findOne({ "profile.email": sanitizedEmail });
+
+    const GENERIC = 'Invalid email or password.';
+    if (!candidate) {
+      return res.status(401).json({ message: GENERIC });
+    }
+
+    const ok = await bcrypt.compare(password, candidate.passwordHash);
+    if (!ok) {
+      return res.status(401).json({ message: GENERIC });
+    }
+
+    return res.status(200).json(buildAuthResponse(candidate));
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+async function register(req: Request, res: Response){
 
   const { id } = req.params;
   const { firstName, lastNames, phone } = req.body;
@@ -74,7 +112,7 @@ async function register(req, res){
   }
 }
 
-async function fetchCandidate(req, res) {
+async function fetchCandidate(req: Request, res: Response) {
   const { id } = req.params;
   try {
     const candidate = await Candidate.findById(id)
@@ -88,7 +126,7 @@ async function fetchCandidate(req, res) {
   }
 }
 
-async function testCandidate(req, res) {
+async function testCandidate(req: Request, res: Response) {
   const { id } = req.params;
   const { choices } = req.body;
   let score = 0;
@@ -132,4 +170,4 @@ async function testCandidate(req, res) {
   }
 }
 
-module.exports = { enter, register, fetchCandidate, testCandidate}
+export { signup, login, register, fetchCandidate, testCandidate }

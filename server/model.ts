@@ -1,7 +1,14 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 
 // TODO add relevant data to profile (birthday, age, cpf, adress, state, city, etc)
+
+const notificationSchema = new mongoose.Schema({
+  type: { type: String, enum: ['success', 'warning', 'info'], default: 'info'},
+  text: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+  read: { type: Boolean, default: false }
+});
 
 const candidateSchema = new mongoose.Schema({
   profile: {
@@ -52,12 +59,7 @@ const candidateSchema = new mongoose.Schema({
   },
 
   notifications: {
-    type: [{
-      type: { type: String, enum: ['success', 'warning', 'info'], default: 'info'},
-      text: { type: String, required: true },
-      createdAt: { type: Date, default: Date.now },
-      read: { type: Boolean, default: false }
-    }],
+    type: [notificationSchema],
     default: [
       {
         type: 'info',
@@ -69,4 +71,4 @@ const candidateSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model("Candidate", candidateSchema)
+export default mongoose.model("Candidate", candidateSchema)
